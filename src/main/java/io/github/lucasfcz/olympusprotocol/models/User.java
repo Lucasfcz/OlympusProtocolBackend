@@ -27,15 +27,15 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(nullable = false)
+    private String name;
+
     @Email
     @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
     private String password;
-
-    @Column(nullable = false)
-    private String name;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -48,6 +48,12 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private ExperienceLevel experienceLevel;
 
+    @Column(nullable = false)
+    private Double bodyWeight;
+
+    @Column(nullable = false)
+    private Double height;
+
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -55,12 +61,14 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private boolean active;
 
-    public User(String email, String password, String name, ExperienceLevel experienceLevel) {
+    public User(String name, String email, String password, ExperienceLevel experienceLevel, Double bodyWeight, Double height) {
+        this.name = name;
         this.email = email;
         this.password = password;
-        this.name = name;
         this.role = Role.USER;
         this.experienceLevel = experienceLevel;
+        this.bodyWeight = bodyWeight;
+        this.height = height;
         this.active = true;
     }
 

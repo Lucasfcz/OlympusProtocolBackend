@@ -24,18 +24,28 @@ public class AuthService {
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) {
-            throw new DuplicateResourceException("This email is already registered: " + request.email());
+            throw new DuplicateResourceException(
+                    "This email is already registered: " + request.email()
+            );
         }
 
         var user = new User(
+                request.name(),
                 request.email(),
                 passwordEncoder.encode(request.password()),
-                request.name(),
-                request.experienceLevel()
+                request.experienceLevel(),
+                request.bodyWeight(),
+                request.height()
         );
 
         userRepository.save(user);
-        return new AuthResponse(jwtService.generateToken(user), user.getName(), user.getEmail(), user.getRole());
+
+        return new AuthResponse(
+                jwtService.generateToken(user),
+                user.getName(),
+                user.getEmail(),
+                user.getRole()
+        );
     }
 
     public AuthResponse login(LoginRequest request) {
