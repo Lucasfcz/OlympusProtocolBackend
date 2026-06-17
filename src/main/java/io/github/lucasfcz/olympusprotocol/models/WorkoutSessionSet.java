@@ -21,8 +21,9 @@ public class WorkoutSessionSet {
     @JoinColumn(name = "workout_session_exercise_id", nullable = false)
     private WorkoutSessionExercise workoutSessionExercise;
 
+    // Ordering the number of series for exercise
     @Column(nullable = false)
-    private Integer setOrder; // new
+    private Integer setOrder;
 
     @Column(nullable = false)
     private Integer reps;

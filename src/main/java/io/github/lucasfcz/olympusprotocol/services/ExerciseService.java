@@ -34,7 +34,8 @@ public class ExerciseService {
                 request.safetyRating(),
                 request.efficiencyRating(),
                 request.adminNotes(),
-                request.gifUrl()
+                request.gifUrl(),
+                request.usesBodyWeight()
         );
 
         exerciseRepository.save(exercise);

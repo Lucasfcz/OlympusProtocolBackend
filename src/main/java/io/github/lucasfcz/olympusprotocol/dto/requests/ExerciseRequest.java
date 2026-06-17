@@ -17,6 +17,7 @@ public record ExerciseRequest(
         @NotNull EfficiencyRating efficiencyRating,
         String adminNotes,
         String gifUrl,
+        @NotNull boolean usesBodyWeight,
         @NotEmpty List<MuscleActivationRequest> muscles,
         List<ExerciseTipRequest> tips,
         List<ExerciseContraindicationRequest> contraindications

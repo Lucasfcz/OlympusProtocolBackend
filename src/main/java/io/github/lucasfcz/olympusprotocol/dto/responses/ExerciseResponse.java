@@ -16,8 +16,9 @@ public record ExerciseResponse(
         EfficiencyRating efficiencyRating,
         String adminNotes,
         String gifUrl,
+        boolean usesBodyWeight,
         boolean active,
         List<MuscleActivationResponse> muscles,
         List<ExerciseTipResponse> tips,
         List<ExerciseContraindicationResponse> contraindications
-) {}
+        ) {}

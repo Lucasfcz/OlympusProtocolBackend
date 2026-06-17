@@ -63,10 +63,13 @@ public class Exercise {
     private LocalDateTime createAt;
 
     @Column(nullable = false)
+    private boolean usesBodyWeight;
+
+    @Column(nullable = false)
     private boolean active;
 
     public Exercise(String name, String description, ExperienceLevel recommendedExperienceLevel, SafetyRating safetyRating,
-                    EfficiencyRating efficiencyRating, String adminNotes, String gifUrl) {
+                    EfficiencyRating efficiencyRating, String adminNotes, String gifUrl, boolean usesBodyWeight) {
         this.name = name;
         this.description = description;
         this.recommendedExperienceLevel = recommendedExperienceLevel;
@@ -74,6 +77,7 @@ public class Exercise {
         this.efficiencyRating = efficiencyRating;
         this.adminNotes = adminNotes;
         this.gifUrl = gifUrl;
+        this.usesBodyWeight = usesBodyWeight;
         this.active = true;
     }
 

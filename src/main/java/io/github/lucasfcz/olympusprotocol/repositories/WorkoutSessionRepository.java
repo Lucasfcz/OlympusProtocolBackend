@@ -14,6 +14,6 @@ public interface WorkoutSessionRepository extends JpaRepository<WorkoutSession, 
 
     Optional<WorkoutSession> findByUserAndFinishedAtIsNull(User user);
 
-    // historic of one workout day
+    // Historic of one workout day
     List<WorkoutSession> findByUserAndWorkoutDay(User user, WorkoutDay workoutDay);
 }

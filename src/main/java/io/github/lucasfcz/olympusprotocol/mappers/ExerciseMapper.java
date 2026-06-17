@@ -26,6 +26,7 @@ public class ExerciseMapper {
                 exercise.getEfficiencyRating(),
                 exercise.getAdminNotes(),
                 exercise.getGifUrl(),
+                exercise.isUsesBodyWeight(),
                 exercise.isActive(),
                 exercise.getMuscles().stream().map(this::toMuscleResponse).toList(),
                 exercise.getTips().stream().map(this::toTipResponse).toList(),
