@@ -1,8 +1,6 @@
 package io.github.lucasfcz.olympusprotocol.services;
 
-import io.github.lucasfcz.olympusprotocol.dto.requests.WorkoutDayExerciseRequest;
-import io.github.lucasfcz.olympusprotocol.dto.requests.WorkoutDayRequest;
-import io.github.lucasfcz.olympusprotocol.dto.requests.WorkoutPlanRequest;
+import io.github.lucasfcz.olympusprotocol.dto.requests.*;
 import io.github.lucasfcz.olympusprotocol.dto.responses.WorkoutPlanResponse;
 import io.github.lucasfcz.olympusprotocol.exceptions.ForbiddenException;
 import io.github.lucasfcz.olympusprotocol.exceptions.ResourceNotFoundException;
@@ -54,7 +52,6 @@ public class WorkoutPlanService {
     public WorkoutPlanResponse findById(UUID userId, UUID planId) {
         var plan = workoutPlanRepository.findById(planId)
                 .orElseThrow(() -> new ResourceNotFoundException("WorkoutPlan", planId));
-
         checkOwnership(plan, userId);
 
         return workoutPlanMapper.toResponse(plan);
@@ -63,9 +60,7 @@ public class WorkoutPlanService {
     public WorkoutPlanResponse addDay(UUID userId, UUID planId, WorkoutDayRequest request) {
         var plan = workoutPlanRepository.findById(planId)
                 .orElseThrow(() -> new ResourceNotFoundException("WorkoutPlan", planId));
-
         checkOwnership(plan, userId);
-
         var day = new WorkoutDay(plan, request.name(), request.dayOrder());
         plan.addDay(day);
 
@@ -102,6 +97,109 @@ public class WorkoutPlanService {
         return warning.isPresent()
                 ? workoutPlanMapper.toResponse(plan, List.of(warning.get()))
                 : workoutPlanMapper.toResponse(plan);
+    }
+
+    public WorkoutPlanResponse removeDay(UUID userId, UUID planId, UUID dayId) {
+        var plan = workoutPlanRepository.findById(planId)
+                .orElseThrow(() -> new ResourceNotFoundException("WorkoutPlan", planId));
+        checkOwnership(plan, userId);
+
+        var day = workoutDayRepository.findById(dayId)
+                .orElseThrow(() -> new ResourceNotFoundException("WorkoutDay", dayId));
+
+        plan.removeDay(dayId);
+        workoutPlanRepository.save(plan);
+
+        return workoutPlanMapper.toResponse(plan);
+    }
+
+    public WorkoutPlanResponse removeExerciseFromDay(UUID userId, UUID planId, UUID dayId, UUID exerciseId) {
+        var plan = workoutPlanRepository.findById(planId)
+                .orElseThrow(() -> new ResourceNotFoundException("WorkoutPlan", planId));
+        checkOwnership(plan, userId);
+
+        var day = workoutDayRepository.findById(dayId)
+                .orElseThrow(() -> new ResourceNotFoundException("WorkoutDay", dayId));
+
+        day.removeExercise(exerciseId);
+        workoutDayRepository.save(day);
+
+        return workoutPlanMapper.toResponse(plan);
+    }
+
+    public WorkoutPlanResponse updateDay(UUID userId, UUID planId, UUID dayId, UpdateWorkoutDayRequest request) {
+        var plan = workoutPlanRepository.findById(planId)
+                .orElseThrow(() -> new ResourceNotFoundException("WorkoutPlan", planId));
+        checkOwnership(plan, userId);
+
+        var day = workoutDayRepository.findById(dayId)
+                .orElseThrow(() -> new ResourceNotFoundException("WorkoutDay", dayId));
+
+        day.updateDay(request.name(), request.dayOrder());
+        workoutDayRepository.save(day);
+
+        return workoutPlanMapper.toResponse(plan);
+    }
+
+    public WorkoutPlanResponse updateExerciseInDay(UUID userId, UUID planId, UUID dayId, UUID exerciseId, UpdateWorkoutDayExerciseRequest request) {
+        var plan = workoutPlanRepository.findById(planId)
+                .orElseThrow(() -> new ResourceNotFoundException("WorkoutPlan", planId));
+        checkOwnership(plan, userId);
+
+        var day = workoutDayRepository.findById(dayId)
+                .orElseThrow(() -> new ResourceNotFoundException("WorkoutDay", dayId));
+
+        var exercise = exerciseRepository.findById(request.exerciseId())
+                .orElseThrow(() -> new ResourceNotFoundException("Exercise", request.exerciseId()));
+
+        var dayExercise = day.getExercises().stream()
+                .filter(de -> de.getId().equals(exerciseId))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Exercise in Day", exerciseId));
+
+        dayExercise.updateExercise(exercise, request.exerciseOrder(), request.sets(), request.reps(), request.restTime());
+        workoutDayRepository.save(day);
+
+        var warning = exerciseValidationService.checkLevelCompatibility(exercise, plan.getUser());
+
+        return warning.isPresent()
+                ? workoutPlanMapper.toResponse(plan, List.of(warning.get()))
+                : workoutPlanMapper.toResponse(plan);
+    }
+
+    public WorkoutPlanResponse reorderDays(UUID userId, UUID planId, ReorderDaysRequest request) {
+        var plan = workoutPlanRepository.findById(planId)
+                .orElseThrow(() -> new ResourceNotFoundException("WorkoutPlan", planId));
+        checkOwnership(plan, userId);
+
+        request.orders().forEach(item ->
+                plan.getWorkoutDays().stream()
+                        .filter(d -> d.getId().equals(item.dayId()))
+                        .findFirst()
+                        .ifPresent(d -> d.updateDay(d.getName(), item.order()))
+        );
+
+        return workoutPlanMapper.toResponse(workoutPlanRepository.save(plan));
+    }
+
+    public WorkoutPlanResponse reorderExercisesInDay(UUID userId, UUID planId, UUID dayId, ReorderExercisesInDayRequest request) {
+        var plan = workoutPlanRepository.findById(planId)
+                .orElseThrow(() -> new ResourceNotFoundException("WorkoutPlan", planId));
+        checkOwnership(plan, userId);
+
+        var day = workoutDayRepository.findById(dayId)
+                .orElseThrow(() -> new ResourceNotFoundException("WorkoutDay", dayId));
+
+        request.orders().forEach(item ->
+                day.getExercises().stream()
+                        .filter(e -> e.getId().equals(item.exerciseId()))
+                        .findFirst()
+                        .ifPresent(e -> e.updateOrder(item.order()))
+        );
+
+        workoutDayRepository.save(day);
+
+        return workoutPlanMapper.toResponse(plan);
     }
 
     public void deactivate(UUID userId, UUID planId) {

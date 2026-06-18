@@ -3,6 +3,7 @@ package io.github.lucasfcz.olympusprotocol.repositories;
 import io.github.lucasfcz.olympusprotocol.models.User;
 import io.github.lucasfcz.olympusprotocol.models.WorkoutDay;
 import io.github.lucasfcz.olympusprotocol.models.WorkoutSession;
+import io.github.lucasfcz.olympusprotocol.models.WorkoutSessionSet;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

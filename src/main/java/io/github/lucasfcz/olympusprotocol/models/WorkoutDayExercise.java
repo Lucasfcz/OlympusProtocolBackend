@@ -47,4 +47,16 @@ public class WorkoutDayExercise {
         this.reps = reps;
         this.restTime = restTime;
     }
+
+    public void updateExercise(Exercise exercise, Integer exerciseOrder, Integer sets, Integer reps, Integer restTime) {
+        this.exercise = exercise;
+        this.exerciseOrder = exerciseOrder;
+        this.sets = sets;
+        this.reps = reps;
+        this.restTime = restTime;
+    }
+
+    public void updateOrder(Integer order) {
+        this.exerciseOrder = order;
+    }
 }

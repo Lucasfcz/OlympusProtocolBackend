@@ -34,11 +34,23 @@ public class WorkoutSessionSet {
     @Column
     private Integer restTime;
 
-    public WorkoutSessionSet(Integer setOrder, Integer reps, Double weight, Integer restTime) {
+    public WorkoutSessionSet(WorkoutSessionExercise workoutSessionExercise, Integer setOrder, Integer reps, Double weight, Integer restTime) {
+        this.workoutSessionExercise = workoutSessionExercise;
         this.setOrder = setOrder;
         this.reps = reps;
         this.weight = weight;
         this.restTime = restTime;
+    }
+
+    public void updateSet(Integer setOrder, Integer reps, Double weight, Integer restTime) {
+        this.setOrder = setOrder;
+        this.reps = reps;
+        this.weight = weight;
+        this.restTime = restTime;
+    }
+
+    public void updateOrder(Integer newOrder) {
+        this.setOrder = newOrder;
     }
 
     public Double setVolume() {

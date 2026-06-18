@@ -1,8 +1,6 @@
 package io.github.lucasfcz.olympusprotocol.controllers;
 
-import io.github.lucasfcz.olympusprotocol.dto.requests.WorkoutDayExerciseRequest;
-import io.github.lucasfcz.olympusprotocol.dto.requests.WorkoutDayRequest;
-import io.github.lucasfcz.olympusprotocol.dto.requests.WorkoutPlanRequest;
+import io.github.lucasfcz.olympusprotocol.dto.requests.*;
 import io.github.lucasfcz.olympusprotocol.dto.responses.WorkoutPlanResponse;
 import io.github.lucasfcz.olympusprotocol.models.User;
 import io.github.lucasfcz.olympusprotocol.services.WorkoutPlanService;
@@ -63,6 +61,44 @@ public class WorkoutPlanController {
                 .body(workoutPlanService.addExerciseToDay(user.getId(), planId, dayId, request));
     }
 
+    @DeleteMapping("/{planId}/days/{dayId}")
+    public ResponseEntity<Void> removeDay(
+            @AuthenticationPrincipal User user,
+            @PathVariable UUID planId,
+            @PathVariable UUID dayId) {
+        workoutPlanService.removeDay(user.getId(), planId, dayId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{planId}/days/{dayId}/exercises/{exerciseId}")
+    public ResponseEntity<Void> removeExerciseFromDay(
+            @AuthenticationPrincipal User user,
+            @PathVariable UUID planId,
+            @PathVariable UUID dayId,
+            @PathVariable UUID exerciseId) {
+        workoutPlanService.removeExerciseFromDay(user.getId(), planId, dayId, exerciseId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{planId}/days/{dayId}")
+    public ResponseEntity<WorkoutPlanResponse> updateDay(
+            @AuthenticationPrincipal User user,
+            @PathVariable UUID planId,
+            @PathVariable UUID dayId,
+            @RequestBody @Valid UpdateWorkoutDayRequest request) {
+        return ResponseEntity.ok(workoutPlanService.updateDay(user.getId(), planId, dayId, request));
+    }
+
+    @PutMapping("/{planId}/days/{dayId}/exercises/{exerciseId}")
+    public ResponseEntity<WorkoutPlanResponse> updateExerciseInDay(
+            @AuthenticationPrincipal User user,
+            @PathVariable UUID planId,
+            @PathVariable UUID dayId,
+            @PathVariable UUID exerciseId,
+            @RequestBody @Valid UpdateWorkoutDayExerciseRequest request) {
+        return ResponseEntity.ok(workoutPlanService.updateExerciseInDay(user.getId(), planId, dayId, exerciseId, request));
+    }
+
     @PatchMapping("/{planId}/deactivate")
     public ResponseEntity<Void> deactivate(
             @AuthenticationPrincipal User user,
@@ -77,5 +113,22 @@ public class WorkoutPlanController {
             @PathVariable UUID planId) {
         workoutPlanService.reactivate(user.getId(), planId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{planId}/days/reorder")
+    public ResponseEntity<WorkoutPlanResponse> reorderDays(
+            @AuthenticationPrincipal User user,
+            @PathVariable UUID planId,
+            @RequestBody @Valid ReorderDaysRequest request) {
+        return ResponseEntity.ok(workoutPlanService.reorderDays(user.getId(), planId, request));
+    }
+
+    @PatchMapping("/{planId}/days/{dayId}/exercises/reorder")
+    public ResponseEntity<WorkoutPlanResponse> reorderExercisesInDay(
+            @AuthenticationPrincipal User user,
+            @PathVariable UUID planId,
+            @PathVariable UUID dayId,
+            @RequestBody @Valid ReorderExercisesInDayRequest request) {
+        return ResponseEntity.ok(workoutPlanService.reorderExercisesInDay(user.getId(), planId, dayId, request));
     }
 }

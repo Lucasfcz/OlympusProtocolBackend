@@ -11,6 +11,7 @@ public record WorkoutSessionResponse(
         LocalDateTime startedAt,
         LocalDateTime finishedAt,
         Double totalVolume,
+        Long durationMinutes,
         List<WorkoutSessionExercisesResponse> sessionExercises,
         List<String> warnings
 ) {}

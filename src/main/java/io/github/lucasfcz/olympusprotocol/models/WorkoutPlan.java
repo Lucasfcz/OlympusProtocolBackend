@@ -53,9 +53,24 @@ public class WorkoutPlan {
         workoutDays.add(day);
     }
 
+    public void removeDay(UUID dayId) {
+        workoutDays.removeIf(d -> d.getId().equals(dayId));
+    }
+
+    public void reorderDays(List<DayOrderItem> orders) {
+        orders.forEach(item ->
+                workoutDays.stream()
+                        .filter(d -> d.getId().equals(item.dayId()))
+                        .findFirst()
+                        .ifPresent(d -> d.updateDay(d.getName(), item.order()))
+        );
+    }
+
     public void updateGoal(WorkoutGoal goal) {
         this.goal = goal;
     }
+
+    public record DayOrderItem(UUID dayId, Integer order) {}
 
     public void deactivate() { this.active = false; }
 

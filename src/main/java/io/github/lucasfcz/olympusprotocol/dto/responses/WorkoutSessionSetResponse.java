@@ -4,6 +4,7 @@ import java.util.UUID;
 
 public record WorkoutSessionSetResponse(
         UUID id,
+        UUID sessionExerciseId,
         Integer setOrder,
         Integer reps,
         Double weight,

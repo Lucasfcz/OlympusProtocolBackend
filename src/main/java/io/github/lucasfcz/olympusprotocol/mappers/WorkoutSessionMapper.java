@@ -28,6 +28,9 @@ public class WorkoutSessionMapper {
                 session.getStartedAt(),
                 session.getFinishedAt(),
                 session.getTotalVolume(),
+                session.isFinished()
+                        ? session.sessionDuration().toMinutes()
+                        : null,
                 session.getExercises().stream()
                         .sorted(Comparator.comparing(WorkoutSessionExercise::getExerciseOrder))
                         .map(this::toExerciseResponse)
@@ -53,6 +56,7 @@ public class WorkoutSessionMapper {
     public WorkoutSessionSetResponse toSetResponse(WorkoutSessionSet set) {
         return new WorkoutSessionSetResponse(
         set.getId(),
+        set.getWorkoutSessionExercise().getId(),
         set.getSetOrder(),
         set.getReps(),
         set.getWeight(),

@@ -45,6 +45,20 @@ public class WorkoutSessionExercise {
         this.sets.add(set);
     }
 
+    public void removeSet(WorkoutSessionSet set) {
+        this.sets.remove(set);
+    }
+
+    public void updateSessionExercise(Exercise exercise, Integer exerciseOrder) {
+        this.exercise = exercise;
+        this.exerciseOrder = exerciseOrder;
+
+    }
+
+    public void updateOrder(Integer newOrder) {
+        this.exerciseOrder = newOrder;
+    }
+
     public Double getExerciseVolume() {
         return sets.stream()
                 .mapToDouble(WorkoutSessionSet::setVolume)
