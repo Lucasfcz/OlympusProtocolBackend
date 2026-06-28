@@ -5,7 +5,6 @@ import io.github.lucasfcz.olympusprotocol.models.enums.ExperienceLevel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("ExerciseValidationService Tests")
@@ -18,7 +17,7 @@ class ExerciseValidationServiceTest {
     void checkLevelCompatibility_equalExperienceLevels_shouldReturnEmpty() {
         // Arrange
         var exercise = TestFactory.makeExercise(ExperienceLevel.BEGINNER);
-        var user = TestFactory.makeUser(ExperienceLevel.BEGINNER);
+        var user = TestFactory.makeUser(null, ExperienceLevel.BEGINNER);
 
         // Act
         var result = service.checkLevelCompatibility(exercise, user);
@@ -32,7 +31,7 @@ class ExerciseValidationServiceTest {
     void checkLevelCompatibility_exerciseLevelLower_shouldReturnEmpty() {
         // Arrange
         var exercise = TestFactory.makeExercise(ExperienceLevel.BEGINNER);
-        var user = TestFactory.makeUser(ExperienceLevel.INTERMEDIATE);
+        var user = TestFactory.makeUser(null, ExperienceLevel.INTERMEDIATE);
 
         // Act
         var result = service.checkLevelCompatibility(exercise, user);
@@ -46,7 +45,7 @@ class ExerciseValidationServiceTest {
     void checkLevelCompatibility_exerciseLevelHigher_shouldReturnWarning() {
         // Arrange
         var exercise = TestFactory.makeExercise(ExperienceLevel.EXPERT);
-        var user = TestFactory.makeUser(ExperienceLevel.BEGINNER);
+        var user = TestFactory.makeUser(null, ExperienceLevel.BEGINNER);
 
         // Act
         var result = service.checkLevelCompatibility(exercise, user);
@@ -62,7 +61,7 @@ class ExerciseValidationServiceTest {
     void checkLevelCompatibility_intermediateUserWithAdvancedExercise_shouldReturnWarning() {
         // Arrange
         var exercise = TestFactory.makeExercise(ExperienceLevel.ADVANCED);
-        var user = TestFactory.makeUser(ExperienceLevel.INTERMEDIATE);
+        var user = TestFactory.makeUser(null, ExperienceLevel.INTERMEDIATE);
 
         // Act
         var result = service.checkLevelCompatibility(exercise, user);
